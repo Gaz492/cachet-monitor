@@ -1,0 +1,13 @@
+{
+  "api_url": "http://status.wolf.ski",
+  "api_token": "",
+  "monitoring": [
+    {
+      "name": "Google",
+      "url": "https://google.co.uk",
+      "component_id": "1",
+      "timeout": 5,
+      "expected_status_code": 200
+    }
+  ]
+}
