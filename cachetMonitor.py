@@ -33,4 +33,8 @@ while (x < monitor_count):
     else:
         if r.status not in status_codes:
             print 'HTTP Error %s: %s' % (r.status, httplib.responses[r.status])
+            error_code = 'HTTP Error %s: %s' % (r.status, httplib.responses[r.status])
     x += 1
+
+
+# Send Update
