@@ -5,6 +5,7 @@ import urllib3
 import certifi
 import httplib
 import json
+from pprint import pprint
 
 
 class Cachet(object):
@@ -22,6 +23,15 @@ class Cachet(object):
         # Count how many sites to monitor
         monitor_count = len(self.readConfig()['monitoring'])
         x = 0
+        cfErrors = {
+            520: "Web server is returning an unknown error",
+            521: "Web server is down",
+            522: "Connection timed out",
+            523: "Origin is unreachable",
+            524: "A timeout occurred",
+            525: "SSL handshake failed",
+            526: "Invalid SSL certificate"
+        }
 
         # Loop through sites to monitor
         while x < monitor_count:
@@ -40,11 +50,21 @@ class Cachet(object):
             except urllib3.exceptions.HTTPError as e:
                 print e
             else:
-                if r.status not in status_codes:
-                    #            print 'HTTP Error %s: %s' % (r.status, httplib.responses[r.status])
-                    error_code = 'HTTP Error %s: %s' % (r.status, httplib.responses[r.status])
-                    # sendReport(error_code, self.readConfig()['monitoring'][x]['component_id'])
+                if r.status not in status_codes and r.status not in cfErrors:
+                    print url
+                    error_code = '%s HTTP Error %s: %s' % (url, r.status, httplib.responses[r.status])
+                    print error_code
                     self.putComponentsByID(id, status=4)
+                elif r.status in cfErrors and r.status not in status_codes:
+                    error_code = '%s HTTP Error %s: %s' % (url, r.status, cfErrors[r.status])
+                    print error_code
+                    self.putComponentsByID(id, status=4)
+                elif r.status in status_codes:
+                    current_status = self.getComponentsByID(id).json()['data']['status']
+                    if current_status not in status_codes:
+                        self.putComponentsByID(id, status=1)
+
+
             x += 1
 
     def __getRequest(self, path):
