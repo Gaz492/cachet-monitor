@@ -78,7 +78,7 @@ class Cachet(object):
                         self.putComponentsByID(c_id, status=1)
                         incident_id, incident_status = self.checkForIncident(c_id)
 
-                        if incident_id:
+                        if incident_id and incident_status:
                             print "active incident"
             x += 1
 
