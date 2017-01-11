@@ -19,6 +19,25 @@ class Cachet(object):
         with open('config.json', 'r') as json_data:
             return json.load(json_data)
 
+    def checkForIncident(self, component_id):
+        current_incidents = self.getIncidents()
+        incidents = len(current_incidents.json()['data'])
+        x = 0
+
+        while x < incidents:
+            incident_id = current_incidents.json()['data'][x]['id']
+            incident_component_id = current_incidents.json()['data'][x]['component_id']
+            incident_status = current_incidents.json()['data'][x]['status']
+            
+            print(incident_id)
+            print(incident_component_id)
+            print(incident_status)
+
+            if component_id == incident_component_id:
+                return incident_id, incident_status
+            x += 1
+
+
     def checkSites(self):
         # Count how many sites to monitor
         monitor_count = len(self.readConfig()['monitoring'])
@@ -32,16 +51,11 @@ class Cachet(object):
             525: "SSL handshake failed",
             526: "Invalid SSL certificate"
         }
-
         # Loop through sites to monitor
         while x < monitor_count:
-
-            # status_codes = [200, 201, 202, 203, 204, 205, 206, 208, 226]
             status_codes = self.readConfig()['monitoring'][x]['expected_status_code']
-
             url = self.readConfig()['monitoring'][x]['url']
-            id = self.readConfig()['monitoring'][x]['component_id']
-
+            c_id = self.readConfig()['monitoring'][x]['component_id']
             http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
             try:
                 r = http.request('GET', url, timeout=self.readConfig()['monitoring'][x]['timeout'])
@@ -54,17 +68,19 @@ class Cachet(object):
                     print url
                     error_code = '%s HTTP Error %s: %s' % (url, r.status, httplib.responses[r.status])
                     print error_code
-                    self.putComponentsByID(id, status=4)
+                    self.putComponentsByID(c_id, status=4)
                 elif r.status in cfErrors and r.status not in status_codes:
                     error_code = '%s HTTP Error %s: %s' % (url, r.status, cfErrors[r.status])
                     print error_code
-                    self.putComponentsByID(id, status=4)
+                    self.putComponentsByID(c_id, status=4)
                 elif r.status in status_codes:
-                    current_status = self.getComponentsByID(id).json()['data']['status']
+                    current_status = self.getComponentsByID(c_id).json()['data']['status']
                     if current_status not in status_codes:
-                        self.putComponentsByID(id, status=1)
+                        self.putComponentsByID(c_id, status=1)
+                        incident_id, incident_status = self.checkForIncident(c_id)
 
-
+                        if incident_id:
+                            print "active incident"
             x += 1
 
     def __getRequest(self, path):
