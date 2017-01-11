@@ -4,19 +4,29 @@ import requests
 import urllib3
 import certifi
 import httplib
-import json
 
 from utils import Utils
 
 
 
 class Cachet(object):
+
     def __init__(self):
         self.utils = Utils()
         self.base_url = self.utils.readConfig()['api_url']
         self.api_token = self.utils.readConfig()['api_token']
         self.http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
         self.checkSites()
+
+        self.cfErrors = {
+            520: "Web server is returning an unknown error",
+            521: "Web server is down",
+            522: "Connection timed out",
+            523: "Origin is unreachable",
+            524: "A timeout occurred",
+            525: "SSL handshake failed",
+            526: "Invalid SSL certificate"
+        }
 
     def checkForIncident(self, component_id):
         current_incidents = self.utils.getIncidents()
@@ -28,10 +38,6 @@ class Cachet(object):
             incident_component_id = current_incidents.json()['data'][x]['component_id']
             incident_status = current_incidents.json()['data'][x]['status']
 
-            print(incident_id)
-            print(incident_component_id)
-            print(incident_status)
-
             if component_id == incident_component_id:
                 return incident_id, incident_status
             x += 1
@@ -41,15 +47,7 @@ class Cachet(object):
         # Count how many sites to monitor
         monitor_count = len(self.utils.readConfig()['monitoring'])
         x = 0
-        cfErrors = {
-            520: "Web server is returning an unknown error",
-            521: "Web server is down",
-            522: "Connection timed out",
-            523: "Origin is unreachable",
-            524: "A timeout occurred",
-            525: "SSL handshake failed",
-            526: "Invalid SSL certificate"
-        }
+
         # Loop through sites to monitor
         while x < monitor_count:
             status_codes = self.utils.readConfig()['monitoring'][x]['expected_status_code']
@@ -62,13 +60,13 @@ class Cachet(object):
             except urllib3.exceptions.HTTPError as e:
                 print e
             else:
-                if r.status not in status_codes and r.status not in cfErrors:
+                if r.status not in status_codes and r.status not in self.cfErrors:
                     print url
                     error_code = '%s HTTP Error %s: %s' % (url, r.status, httplib.responses[r.status])
                     print error_code
                     self.utils.putComponentsByID(c_id, status=4)
-                elif r.status in cfErrors and r.status not in status_codes:
-                    error_code = '%s HTTP Error %s: %s' % (url, r.status, cfErrors[r.status])
+                elif r.status in self.cfErrors and r.status not in status_codes:
+                    error_code = '%s HTTP Error %s: %s' % (url, r.status, self.cfErrors[r.status])
                     print error_code
                     self.utils.putComponentsByID(c_id, status=4)
                 elif r.status in status_codes:
