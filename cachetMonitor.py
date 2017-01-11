@@ -3,6 +3,7 @@
 import urllib3
 import certifi
 import httplib
+import time
 
 from utils import Utils
 
@@ -53,6 +54,7 @@ class Cachet(object):
             url = self.utils.readConfig()['monitoring'][x]['url']
             request_method = self.utils.readConfig()['monitoring'][x]['method']
             c_id = self.utils.readConfig()['monitoring'][x]['component_id']
+            localtime = time.asctime(time.localtime(time.time()))
             try:
                 r = self.http.request(request_method, url, retries=False, timeout=self.utils.readConfig()['monitoring'][x]['timeout'])
             except urllib3.exceptions.SSLError as e:
@@ -65,11 +67,11 @@ class Cachet(object):
                 print e
             else:
                 if r.status not in status_codes and r.status not in cfErrors:
-                    error_code = '%s check **failed** - time date here \n\n`%s %s HTTP Error %s: %s`' % (url, request_method, url, r.status, httplib.responses[r.status])
+                    error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error %s: %s`' % (url, localtime, request_method, url, r.status, httplib.responses[r.status])
                     c_status = 4
                     self.utils.putComponentsByID(c_id, status=c_status)
                 elif r.status in cfErrors and r.status not in status_codes:
-                    error_code = '%s check **failed** - time date here \n\n`%s %s HTTP Error %s: %s`' % (url, request_method, url, r.status, cfErrors[r.status])
+                    error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error %s: %s`' % (url, localtime, request_method, url, r.status, cfErrors[r.status])
                     c_status = 4
                     self.__reportIncident('%s: HTTP Error' % url, error_code, 1, c_id, c_status)
                     self.utils.putComponentsByID(c_id, status=c_status)
