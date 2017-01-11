@@ -51,9 +51,10 @@ class Cachet(object):
         while x < monitor_count:
             status_codes = self.utils.readConfig()['monitoring'][x]['expected_status_code']
             url = self.utils.readConfig()['monitoring'][x]['url']
+            request_method = self.utils.readConfig()['monitoring'][x]['method']
             c_id = self.utils.readConfig()['monitoring'][x]['component_id']
             try:
-                r = self.http.request('GET', url, retries=False, timeout=self.utils.readConfig()['monitoring'][x]['timeout'])
+                r = self.http.request(request_method, url, retries=False, timeout=self.utils.readConfig()['monitoring'][x]['timeout'])
             except urllib3.exceptions.SSLError as e:
                 print e
             except urllib3.exceptions.MaxRetryError as e:
@@ -64,13 +65,15 @@ class Cachet(object):
                 print e
             else:
                 if r.status not in status_codes and r.status not in cfErrors:
-                    error_code = '%s HTTP Error %s: %s' % (url, r.status, httplib.responses[r.status])
-                    self.utils.putComponentsByID(c_id, status=4)
-                    self.__reportIncident('%s: HTTP Error' % url, error_code, 2, 1, 5, 1)
+                    error_code = '%s check **failed** - time date here \n\n`%s %s HTTP Error %s: %s`' % (url, request_method, url, r.status, httplib.responses[r.status])
+                    c_status = 4
+                    self.utils.putComponentsByID(c_id, status=c_status)
+                    self.__updateIncident('%s: HTTP Error' % url, error_code, 1, c_id, c_status)
                 elif r.status in cfErrors and r.status not in status_codes:
-                    error_code = '%s HTTP Error %s: %s' % (url, r.status, cfErrors[r.status])
-                    self.__reportIncident('%s: HTTP Error' % url, error_code, 2, 1, 5, 1)
-                    self.utils.putComponentsByID(c_id, status=4)
+                    error_code = '%s check **failed** - time date here \n\n`%s %s HTTP Error %s: %s`' % (url, request_method, url, r.status, cfErrors[r.status])
+                    c_status = 4
+                    self.__reportIncident('%s: HTTP Error' % url, error_code, 1, c_id, c_status)
+                    self.utils.putComponentsByID(c_id, status=c_status)
                 elif r.status in status_codes:
                     current_status = self.utils.getComponentsByID(c_id).json()['data']['status']
                     if current_status not in status_codes:
@@ -82,10 +85,12 @@ class Cachet(object):
                         #     print "active incident"
             x += 1
 
-    def __reportIncident(self, title, description, status, visible, c_id, c_status):
-        print("Title: %s, Description: %s, Status: %s, Visible: %s, Component ID: %s, Component Status: %s" % (title, description, str(status), str(visible), str(c_id), str(c_status)))
+    def __reportIncident(self, title, description, status, c_id, c_status):
+        print("Title: %s, Description: %s, Status: %s, Component ID: %s, Component Status: %s" % (title, description, str(status), str(c_id), str(c_status)))
+        self.utils.postIncidents(title, description, status, 1, component_id=c_id, component_status=c_status)
 
     def __updateIncident(self, i_id, description, status, c_status):
         print("Incident ID: %s, Description: %s, Status: %s, Component Status: %s" % (i_id, description, status, c_status))
+        self.utils.putIncidentsByID(i_id, message=description, status=status, component_status=c_status)
 
 Cachet()
