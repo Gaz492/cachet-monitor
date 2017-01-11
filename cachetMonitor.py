@@ -28,7 +28,7 @@ class Cachet(object):
             incident_id = current_incidents.json()['data'][x]['id']
             incident_component_id = current_incidents.json()['data'][x]['component_id']
             incident_status = current_incidents.json()['data'][x]['status']
-            
+
             print(incident_id)
             print(incident_component_id)
             print(incident_status)
@@ -101,8 +101,8 @@ class Cachet(object):
     def getComponents(self):
         return self.__getRequest('/components')
 
-    def getComponentsByID(self, id):
-        return self.__getRequest('/components/%s' % id)
+    def getComponentsByID(self, c_id):
+        return self.__getRequest('/components/%s' % c_id)
 
     def postComponents(self, name, status, **kwargs):
         '''Create a new component.
@@ -121,7 +121,7 @@ class Cachet(object):
         kwargs['status'] = status
         return self.__postRequest('/components', kwargs)  #
 
-    def putComponentsByID(self, id, **kwargs):
+    def putComponentsByID(self, c_id, **kwargs):
         '''Updates a component.
 
         :param id: Component ID
@@ -134,9 +134,9 @@ class Cachet(object):
         :rtype: requests.Response
         '''
 
-        return self.__putRequest('/components/%s' % id, kwargs)
+        return self.__putRequest('/components/%s' % c_id, kwargs)
 
-    def deleteComponentsByID(self, id):
+    def deleteComponentsByID(self, c_id):
         '''Delete a component.
 
         :param id: Component ID
@@ -144,7 +144,7 @@ class Cachet(object):
         :rtype: requests.Response
         '''
 
-        return self.__delRequest('/components/%s' % id)
+        return self.__delRequest('/components/%s' % c_id)
 
     def getComponentsGroups(self):
         '''
@@ -155,7 +155,7 @@ class Cachet(object):
 
         return self.__getRequest('/components/groups')
 
-    def getComponentsGroupsByID(self, id):
+    def getComponentsGroupsByID(self, c_id):
         '''
 
         :param id: ID of the group you want to fetch
@@ -163,7 +163,7 @@ class Cachet(object):
         :rtype: requests.Response
         '''
 
-        return self.__getRequest('/components/groups/%s' % id)
+        return self.__getRequest('/components/groups/%s' % c_id)
 
     def postComponentsGroups(self, name, **kwargs):
         '''
@@ -178,7 +178,7 @@ class Cachet(object):
         kwargs['name'] = name
         return self.__postRequest('/components/groups', kwargs)
 
-    def putComponentsGroupsByID(self, id, **kwargs):
+    def putComponentsGroupsByID(self, c_id, **kwargs):
         '''
 
         :param id: Component group to update
@@ -189,9 +189,9 @@ class Cachet(object):
         :rtype: requests.Response
         '''
 
-        return self.__putRequest('/components/groups/%s' % id, kwargs)
+        return self.__putRequest('/components/groups/%s' % c_id, kwargs)
 
-    def deleteComponentsGroupsByID(self, id):
+    def deleteComponentsGroupsByID(self, c_id):
         '''
 
         :param id: Component group to delete
@@ -199,7 +199,7 @@ class Cachet(object):
         :rtype: requests.Response
         '''
 
-        return self.__getRequest('/components/groups/%s' % id)
+        return self.__getRequest('/components/groups/%s' % c_id)
 
     def getIncidents(self):
         '''Return all incidents.
@@ -210,7 +210,7 @@ class Cachet(object):
 
         return self.__getRequest('/incidents')
 
-    def getIncidentsByID(self, id):
+    def getIncidentsByID(self, c_id):
         '''Returns a single incident.
 
         :param id: Incident ID
@@ -218,7 +218,7 @@ class Cachet(object):
         :rtype: requests.Response
         '''
 
-        return self.__getRequest('/incidents/%s' % id)
+        return self.__getRequest('/incidents/%s' % c_id)
 
     def postIncidents(self, name, message, status, visible, **kwargs):
         '''Create a new incident.
@@ -240,7 +240,7 @@ class Cachet(object):
         kwargs['visible'] = visible
         return self.__postRequest('/incidents', kwargs)
 
-    def putIncidentsByID(self, id, **kwargs):
+    def putIncidentsByID(self, c_id, **kwargs):
         '''
 
         :param id: ID of the incident to update.
@@ -254,9 +254,9 @@ class Cachet(object):
         :rtype: requests.Response
         '''
 
-        return self.__putRequest('/incidents/%s' % id, kwargs)
+        return self.__putRequest('/incidents/%s' % c_id, kwargs)
 
-    def deleteIncidentsByID(self, id):
+    def deleteIncidentsByID(self, c_id):
         '''Delete an incident.
 
         :param id: Incident ID
@@ -264,7 +264,7 @@ class Cachet(object):
         :rtype: requests.Response
         '''
 
-        return self.__delRequest('/incidents/%s' % id)
+        return self.__delRequest('/incidents/%s' % c_id)
 
     def getMetrics(self):
         '''Returns all metrics that have been setup.
@@ -293,7 +293,7 @@ class Cachet(object):
         kwargs['default_value'] = default_value
         return self.__postRequest('/metrics', kwargs)
 
-    def getMetricsByID(self, id):
+    def getMetricsByID(self, c_id):
         '''Returns a single metric, without points.
 
         :param id: Metric ID
@@ -301,9 +301,9 @@ class Cachet(object):
         :rtype: requests.Response
         '''
 
-        return self.__getRequest('/metrics/%s' % id)
+        return self.__getRequest('/metrics/%s' % c_id)
 
-    def deleteMetricsByID(self, id):
+    def deleteMetricsByID(self, c_id):
         '''Delete a metric.
 
         :param id: Metric ID
@@ -311,9 +311,9 @@ class Cachet(object):
         :rtype: requests.Response
         '''
 
-        return self.__delRequest('/metrics/%s' % id)
+        return self.__delRequest('/metrics/%s' % c_id)
 
-    def getMetricsPointsByID(self, id):
+    def getMetricsPointsByID(self, c_id):
         '''Return a list of metric points.
 
         :param id: Metric ID
@@ -321,9 +321,9 @@ class Cachet(object):
         :rtype: requests.Response
         '''
 
-        return self.__getRequest('/metrics/%s/points' % id)
+        return self.__getRequest('/metrics/%s/points' % c_id)
 
-    def postMetricsPointsByID(self, id, value, **kwargs):
+    def postMetricsPointsByID(self, c_id, value, **kwargs):
         '''Add a metric point to a given metric.
 
         :param id: Metric ID
@@ -334,9 +334,9 @@ class Cachet(object):
         '''
 
         kwargs['value'] = value
-        return self.__postRequest('/metrics/%s/points' % id, kwargs)
+        return self.__postRequest('/metrics/%s/points' % c_id, kwargs)
 
-    def deleteMetricsPointsByID(self, id, point_id):
+    def deleteMetricsPointsByID(self, c_id, point_id):
         '''Delete a metric point.
 
         :param id: Metric ID
@@ -345,7 +345,7 @@ class Cachet(object):
         :rtype: requests.Response
         '''
 
-        return self.__delRequest('/metrics/%s/points/%s' % (id, point_id))
+        return self.__delRequest('/metrics/%s/points/%s' % (c_id, point_id))
 
     def getSubscribers(self):
         '''Returns all subscribers.
@@ -368,7 +368,7 @@ class Cachet(object):
         kwargs['email'] = email
         return self.__postRequest('/subscribers', kwargs)
 
-    def deleteSubscribersByID(self, id):
+    def deleteSubscribersByID(self, c_id):
         '''Delete a subscriber.
 
         :param id: ID of the subscriber to delete
@@ -376,7 +376,7 @@ class Cachet(object):
         :rtype: requests.Response
         '''
 
-        return self.__delRequest('/subscribers/%s' % id)
+        return self.__delRequest('/subscribers/%s' % c_id)
 
 
 Cachet()
