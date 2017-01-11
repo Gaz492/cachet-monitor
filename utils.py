@@ -170,7 +170,7 @@ class Utils(object):
         kwargs['visible'] = visible
         return self.__postRequest('/incidents', kwargs)
 
-    def putIncidentsByID(self, c_id, **kwargs):
+    def putIncidentsByID(self, i_id, **kwargs):
         '''
 
         :param id: ID of the incident to update.
@@ -184,9 +184,9 @@ class Utils(object):
         :rtype: requests.Response
         '''
 
-        return self.__putRequest('/incidents/%s' % c_id, kwargs)
+        return self.__putRequest('/incidents/%s' % i_id, kwargs)
 
-    def deleteIncidentsByID(self, c_id):
+    def deleteIncidentsByID(self, i_id):
         '''Delete an incident.
 
         :param id: Incident ID
@@ -194,7 +194,7 @@ class Utils(object):
         :rtype: requests.Response
         '''
 
-        return self.__delRequest('/incidents/%s' % c_id)
+        return self.__delRequest('/incidents/%s' % i_id)
 
     def getMetrics(self):
         '''Returns all metrics that have been setup.
