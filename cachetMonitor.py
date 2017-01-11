@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # coding=utf-8
-import requests
 import urllib3
 import certifi
 import httplib
