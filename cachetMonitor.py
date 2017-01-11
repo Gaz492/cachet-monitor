@@ -68,7 +68,6 @@ class Cachet(object):
                     error_code = '%s check **failed** - time date here \n\n`%s %s HTTP Error %s: %s`' % (url, request_method, url, r.status, httplib.responses[r.status])
                     c_status = 4
                     self.utils.putComponentsByID(c_id, status=c_status)
-                    self.__updateIncident('%s: HTTP Error' % url, error_code, 1, c_id, c_status)
                 elif r.status in cfErrors and r.status not in status_codes:
                     error_code = '%s check **failed** - time date here \n\n`%s %s HTTP Error %s: %s`' % (url, request_method, url, r.status, cfErrors[r.status])
                     c_status = 4
