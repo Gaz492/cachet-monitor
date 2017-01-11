@@ -5,7 +5,6 @@ import urllib3
 import certifi
 import httplib
 import json
-from pprint import pprint
 
 
 class Cachet(object):
