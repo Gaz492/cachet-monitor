@@ -1,2 +1,2 @@
 
-Copyright (C) 2017 Gareth
+Copyright (C) 2017 Gareth Williams (Gaz492)
