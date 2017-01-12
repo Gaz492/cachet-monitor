@@ -5,5 +5,5 @@ python:
 install: "pip install -r requirements.txt"
 # command to run tests
 script:
-  - "mv settiings/config.json.example settings/config.json"
+  - "mv settings/config.json.example settings/config.json"
   - "python run.py"
