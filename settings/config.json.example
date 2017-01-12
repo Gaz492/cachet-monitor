@@ -1,6 +1,7 @@
 {
   "api_url": "http://status.wolf.ski/api/v1",
   "api_token": "5hXeKaLDJVLVE7NziKmb",
+  "interval": 120,
   "monitoring": [
     {
       "name": "Homepage",
