@@ -1,6 +1,10 @@
 # Cachet URL Monitoring
 
 ## Build Status
+Travis
+
+[![Build Status](https://travis-ci.org/gaz492/cachet-monitor.svg?branch=master)](https://travis-ci.org/gaz492/cachet-monitor)
+
 Codeacy
 
 
