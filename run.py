@@ -1,7 +1,9 @@
 import os
 import logging
+import datetime
 
 from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.triggers.date import DateTrigger
 from system.cachetMonitor import Cachet
 from system.utils import Utils
 
@@ -17,7 +19,8 @@ if not os.path.exists("settings/config.json"):
     exit(1)
 
 scheduler = BlockingScheduler()
-scheduler.add_job(Cachet, 'interval', seconds=schedule_interval)
+scheduler.add_job(Cachet, trigger=DateTrigger(run_date=datetime.datetime.now()), id='initial')
+scheduler.add_job(Cachet, 'interval', seconds=schedule_interval, id='constant')
 print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C'))
 
 try:
