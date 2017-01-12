@@ -140,7 +140,7 @@ class Utils(object):
 
         return self.__getRequest('/incidents')
 
-    def getIncidentsByID(self, c_id):
+    def getIncidentsByID(self, i_id):
         '''Returns a single incident.
 
         :param id: Incident ID
@@ -148,7 +148,7 @@ class Utils(object):
         :rtype: requests.Response
         '''
 
-        return self.__getRequest('/incidents/%s' % c_id)
+        return self.__getRequest('/incidents/%s' % i_id)
 
     def postIncidents(self, name, message, status, visible, **kwargs):
         '''Create a new incident.
