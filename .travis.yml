@@ -5,6 +5,7 @@ python:
 install:
   - "pip install -r requirements.txt"
   - "pip install codacy-coverage"
+  - "pip install coverage"
 # command to run tests
 script:
   - "export CODACY_PROJECT_TOKEN=d08b8d81c55c4d009b6aef9bce3ef64e"

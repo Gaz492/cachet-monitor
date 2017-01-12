@@ -14,9 +14,9 @@ use_schedule = utils.readConfig()['use_schedule']
 logging.basicConfig()
 
 if not os.path.exists("settings/config.json"):
-    print "|! Couldn't find config.json!"
-    print "|! rename the config.json.example to config.json and edit it as required."
-    print "|! After that, run the script again."
+    print("|! Couldn't find config.json!")
+    print("|! rename the config.json.example to config.json and edit it as required.")
+    print("|! After that, run the script again.")
     exit(1)
 
 scheduler = BlockingScheduler()
