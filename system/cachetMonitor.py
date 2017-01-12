@@ -91,17 +91,21 @@ class Cachet(object):
                     incident_id = self.checkForIncident(c_id)
                     if not incident_id:
                         self.__reportIncident('%s: HTTP Error' % url, error_code, 1, c_id, c_status)
-                    self.utils.putComponentsByID(c_id, status=c_status)
+                    current_status = self.getCurrentStatus(c_id)
+                    if current_status is not c_status:
+                        self.utils.putComponentsByID(c_id, status=c_status)
                 elif r.status in cfErrors and r.status not in status_codes:
                     error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error %s: %s`' % (url, localtime, request_method, url, r.status, cfErrors[r.status])
                     c_status = 4
                     incident_id = self.checkForIncident(c_id)
                     if not incident_id:
                         self.__reportIncident('%s: HTTP Error' % url, error_code, 1, c_id, c_status)
-                    self.utils.putComponentsByID(c_id, status=c_status)
+                    current_status = self.getCurrentStatus(c_id)
+                    if current_status is not c_status:
+                        self.utils.putComponentsByID(c_id, status=c_status)
                 elif r.status in status_codes:
-                    current_status = self.utils.getComponentsByID(c_id).json()['data']['status']
-                    if current_status not in status_codes:
+                    current_status = self.getCurrentStatus(c_id)
+                    if current_status is not 1:
                         self.utils.putComponentsByID(c_id, status=1)
                         incident_id = self.checkForIncident(c_id)
                         if incident_id:
@@ -120,4 +124,8 @@ class Cachet(object):
         incident = self.utils.getIncidentsByID(i_id).json()
         i_description = incident['data']['message']
         return i_description
+
+    def getCurrentStatus(self, c_id):
+        current_status = self.utils.getComponentsByID(c_id).json()['data']['status']
+        return current_status
 
