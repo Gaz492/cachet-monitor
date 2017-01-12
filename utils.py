@@ -3,7 +3,6 @@ import json
 
 
 class Utils(object):
-
     def __init__(self):
         self.base_url = self.readConfig()['api_url']
         self.api_token = self.readConfig()['api_token']
