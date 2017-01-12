@@ -8,9 +8,7 @@ import time
 from utils import Utils
 
 
-
 class Cachet(object):
-
     def __init__(self):
         self.utils = Utils()
         self.base_url = self.utils.readConfig()['api_url']
@@ -31,7 +29,6 @@ class Cachet(object):
             if component_id == incident_component_id and incident_status is not 4:
                 return incident_id
             x += 1
-
 
     def checkSites(self):
         # Count how many sites to monitor
@@ -56,7 +53,8 @@ class Cachet(object):
             c_id = self.utils.readConfig()['monitoring'][x]['component_id']
             localtime = time.asctime(time.localtime(time.time()))
             try:
-                r = self.http.request(request_method, url, retries=False, timeout=self.utils.readConfig()['monitoring'][x]['timeout'])
+                r = self.http.request(request_method, url, retries=False,
+                                      timeout=self.utils.readConfig()['monitoring'][x]['timeout'])
             except urllib3.exceptions.SSLError as e:
                 print e
                 incident_id = self.checkForIncident(c_id)
@@ -70,7 +68,8 @@ class Cachet(object):
                 print e
             else:
                 if r.status not in status_codes and r.status not in cfErrors:
-                    error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error %s: %s`' % (url, localtime, request_method, url, r.status, httplib.responses[r.status])
+                    error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error %s: %s`' % (
+                    url, localtime, request_method, url, r.status, httplib.responses[r.status])
                     c_status = 4
                     incident_id = self.checkForIncident(c_id)
                     if not incident_id:
@@ -80,7 +79,8 @@ class Cachet(object):
                         self.getIncidentInfo(incident_id)
                     self.utils.putComponentsByID(c_id, status=c_status)
                 elif r.status in cfErrors and r.status not in status_codes:
-                    error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error %s: %s`' % (url, localtime, request_method, url, r.status, cfErrors[r.status])
+                    error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error %s: %s`' % (
+                    url, localtime, request_method, url, r.status, cfErrors[r.status])
                     c_status = 4
                     incident_id = self.checkForIncident(c_id)
                     if not incident_id:
@@ -97,17 +97,21 @@ class Cachet(object):
                         incident_id = self.checkForIncident(c_id)
                         if incident_id:
                             print('Incident found changing status to resolved')
-                            incident_description = "Resolved at %s\n\n***\n\n%s" % (localtime, self.getIncidentInfo(incident_id))
+                            incident_description = "Resolved at %s\n\n***\n\n%s" % (
+                            localtime, self.getIncidentInfo(incident_id))
                             self.__updateIncident(incident_id, incident_description, 4, c_id, 1)
             x += 1
 
     def __reportIncident(self, title, description, status, c_id, c_status):
-        print("Title: %s, Description: %s, Status: %s, Component ID: %s, Component Status: %s" % (title, description, str(status), str(c_id), str(c_status)))
+        print("Title: %s, Description: %s, Status: %s, Component ID: %s, Component Status: %s" % (
+        title, description, str(status), str(c_id), str(c_status)))
         self.utils.postIncidents(title, description, status, 1, component_id=c_id, component_status=c_status)
 
     def __updateIncident(self, i_id, description, status, c_id, c_status):
-        print("Incident ID: %s, Description: %s, Status: %s, Component ID: %s, Component Status: %s" % (i_id, description, status, c_id,  c_status))
-        self.utils.putIncidentsByID(i_id, message=description, status=status, component_id=c_id, component_status=c_status)
+        print("Incident ID: %s, Description: %s, Status: %s, Component ID: %s, Component Status: %s" % (
+        i_id, description, status, c_id, c_status))
+        self.utils.putIncidentsByID(i_id, message=description, status=status, component_id=c_id,
+                                    component_status=c_status)
 
     def getIncidentInfo(self, i_id):
         print (self.utils.getIncidentsByID(i_id).json())
