@@ -4,6 +4,8 @@ import urllib3
 import certifi
 import httplib
 import time
+import sched
+
 
 from utils import Utils
 
@@ -14,7 +16,10 @@ class Cachet(object):
         self.base_url = self.utils.readConfig()['api_url']
         self.api_token = self.utils.readConfig()['api_token']
         self.http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
-        self.checkSites()
+        s = sched.scheduler(time.time, time.sleep)
+        schedule_interval = self.utils.readConfig()['interval']
+        s.enter(10, 1, self.checkSites, ())
+        s.run()
 
     def checkForIncident(self, component_id):
         current_incidents = self.utils.getIncidents()
@@ -53,7 +58,7 @@ class Cachet(object):
             c_id = self.utils.readConfig()['monitoring'][x]['component_id']
             localtime = time.asctime(time.localtime(time.time()))
             try:
-                r = self.http.request(request_method, url, retries=False,
+                r = self.http.request(request_method, url, retries=1,
                                       timeout=self.utils.readConfig()['monitoring'][x]['timeout'])
             except urllib3.exceptions.SSLError as e:
                 print e
@@ -116,9 +121,5 @@ class Cachet(object):
     def getIncidentInfo(self, i_id):
         print (self.utils.getIncidentsByID(i_id).json())
         incident = self.utils.getIncidentsByID(i_id).json()
-        i_cID = incident['data']['component_id']
         i_description = incident['data']['message']
         return i_description
-
-
-Cachet()

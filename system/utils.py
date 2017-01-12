@@ -9,7 +9,7 @@ class Utils(object):
 
     def readConfig(self):
         # Open Json File
-        with open('config.json', 'r') as json_data:
+        with open('settings/config.json', 'r') as json_data:
             return json.load(json_data)
 
     def __getRequest(self, path):
