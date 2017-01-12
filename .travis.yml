@@ -10,6 +10,7 @@ install:
 script:
   - "export CODACY_PROJECT_TOKEN=d08b8d81c55c4d009b6aef9bce3ef64e"
   - "mv settings/config.json.example settings/config.json"
-  - "coverage run.py"
+  - "python run.py"
+  - "coverage run run.py"
   - "coverage xml"
   - "python-codacy-coverage -r coverage.xml"
