@@ -2,8 +2,13 @@ language: python
 python:
   - "2.7"
 # command to install dependencies
-install: "pip install -r requirements.txt"
+install:
+  - "pip install -r requirements.txt"
+  - "pip install codacy-coverage"
 # command to run tests
 script:
+  - "export CODACY_PROJECT_TOKEN=d08b8d81c55c4d009b6aef9bce3ef64e"
   - "mv settings/config.json.example settings/config.json"
-  - "python run.py"
+  - "coverage run.py"
+  - "coverage xml"
+  - "python-codacy-coverage -r coverage.xml"
