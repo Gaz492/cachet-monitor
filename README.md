@@ -8,15 +8,15 @@ Travis
 Codeacy
 
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/39402e15ade84bc2857a35ec9d25694e)](https://www.codacy.com/app/gaz492/cachet-monitor?utm_source=gaz492@bitbucket.org&amp;utm_medium=referral&amp;utm_content=gaz492/cachet-monitor&amp;utm_campaign=Badge_Grade)[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/39402e15ade84bc2857a35ec9d25694e)](https://www.codacy.com/app/gaz492/cachet-monitor?utm_source=gaz492@bitbucket.org&utm_medium=referral&utm_content=gaz492/cachet-monitor&utm_campaign=Badge_Coverage)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/fcb7c3e5b5da4aa499ee9746ec4102d8)](https://www.codacy.com/app/gaz492/cachet-monitor?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gaz492/cachet-monitor&amp;utm_campaign=Badge_Grade)[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/fcb7c3e5b5da4aa499ee9746ec4102d8)](https://www.codacy.com/app/gaz492/cachet-monitor?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gaz492/cachet-monitor&amp;utm_campaign=Badge_Coverage)
 
 Codeship
 
-![Codeship Badge](https://codeship.com/projects/0198a7f0-ba36-0134-2fc5-4a27c2a3e8e6/status?branch=master)
+![Codeship Badge](https://codeship.com/projects/07991100-bb28-0134-44a3-0649e1686dd4/status?branch=master)
 
 Scrutinizer
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/b/gaz492/cachet-monitor/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/b/gaz492/cachet-monitor/?branch=master)[![Build Status](https://scrutinizer-ci.com/b/gaz492/cachet-monitor/badges/build.png?b=master)](https://scrutinizer-ci.com/b/gaz492/cachet-monitor/build-status/master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/gaz492/cachet-monitor/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/gaz492/cachet-monitor/?branch=master)[![Build Status](https://scrutinizer-ci.com/g/gaz492/cachet-monitor/badges/build.png?b=master)](https://scrutinizer-ci.com/g/gaz492/cachet-monitor/build-status/master)
 
 ## Usage
 
