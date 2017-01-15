@@ -13,28 +13,17 @@ class Cachet(object):
 
     def __init__(self):
         self.utils = Utils()
-        self.base_url = self.utils.readConfig()['api_url']
-        self.api_token = self.utils.readConfig()['api_token']
+        self.config = self.utils.readConfig()
+        self.base_url = self.config['api_url']
+        self.api_token = self.config['api_token']
+        self.maxRetries = self.config['retries']
+
         self.http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
         self.checkSites()
 
-    def checkForIncident(self, component_id):
-        current_incidents = self.utils.getIncidents()
-        incidents = len(current_incidents.json()['data'])
-        x = 0
-
-        while x < incidents:
-            incident_id = current_incidents.json()['data'][x]['id']
-            incident_component_id = current_incidents.json()['data'][x]['component_id']
-            incident_status = current_incidents.json()['data'][x]['status']
-
-            if component_id == incident_component_id and incident_status is not 4:
-                return incident_id
-            x += 1
-
     def checkSites(self):
         # Count how many sites to monitor
-        monitor_count = len(self.utils.readConfig()['monitoring'])
+        monitor_count = len(self.config['monitoring'])
         x = 0
 
         cfErrors = {
@@ -49,13 +38,14 @@ class Cachet(object):
 
         # Loop through sites to monitor
         while x < monitor_count:
-            status_codes = self.utils.readConfig()['monitoring'][x]['expected_status_code']
-            url = self.utils.readConfig()['monitoring'][x]['url']
-            request_method = self.utils.readConfig()['monitoring'][x]['method']
-            c_id = self.utils.readConfig()['monitoring'][x]['component_id']
+            isEnabled = self.utils.readConfig()
+            status_codes = self.config['monitoring'][x]['expected_status_code']
+            url = self.config['monitoring'][x]['url']
+            request_method = self.config['monitoring'][x]['method']
+            c_id = self.config['monitoring'][x]['component_id']
             localtime = time.asctime(time.localtime(time.time()))
             try:
-                r = self.http.request(request_method, url, retries=1, timeout=self.utils.readConfig()['monitoring'][x]['timeout'])
+                r = self.http.request(request_method, url, retries=self.maxRetries, timeout=self.config['monitoring'][x]['timeout'])
             except urllib3.exceptions.SSLError as e:
                 incident_id = self.checkForIncident(c_id)
                 if not incident_id:
@@ -118,6 +108,20 @@ class Cachet(object):
                         if incident_id:
                             incident_description = "Resolved at %s\n\n***\n\n%s" % (localtime, self.getIncidentInfo(incident_id))
                             self.__updateIncident(incident_id, incident_description, 4, c_id, 1)
+            x += 1
+
+    def checkForIncident(self, component_id):
+        current_incidents = self.utils.getIncidents().json()
+        incidents = len(current_incidents['data'])
+        x = 0
+
+        while x < incidents:
+            incident_id = current_incidents['data'][x]['id']
+            incident_component_id = current_incidents['data'][x]['component_id']
+            incident_status = current_incidents['data'][x]['status']
+
+            if component_id == incident_component_id and incident_status is not 4:
+                return incident_id
             x += 1
 
     def __reportIncident(self, title, description, status, c_id, c_status):
