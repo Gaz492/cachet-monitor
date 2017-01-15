@@ -38,14 +38,15 @@ class Cachet(object):
 
         # Loop through sites to monitor
         while x < monitor_count:
-            isEnabled = self.utils.readConfig()
+            isEnabled = self.config['monitoring'][x]['enabled']
             status_codes = self.config['monitoring'][x]['expected_status_code']
             url = self.config['monitoring'][x]['url']
             request_method = self.config['monitoring'][x]['method']
             c_id = self.config['monitoring'][x]['component_id']
             localtime = time.asctime(time.localtime(time.time()))
             try:
-                r = self.http.request(request_method, url, retries=self.maxRetries, timeout=self.config['monitoring'][x]['timeout'])
+                if isEnabled:
+                    r = self.http.request(request_method, url, retries=self.maxRetries, timeout=self.config['monitoring'][x]['timeout'])
             except urllib3.exceptions.SSLError as e:
                 incident_id = self.checkForIncident(c_id)
                 if not incident_id:
@@ -74,13 +75,20 @@ class Cachet(object):
                 incident_id = self.checkForIncident(c_id)
                 if not incident_id:
                     self.__reportIncident('%s: HTTP Error' % url, error_code, 1, c_id, c_status)
+            except urllib3.exceptions.HTTPWarning as e:
+                c_status = 2
+                error_code = '%s check **failed** - %s \n\n`%s %s HTTP Warning: %s`' % (
+                    url, localtime, request_method, url, e)
+                incident_id = self.checkForIncident(c_id)
+                if not incident_id:
+                    self.__reportIncident('%s: HTTP Warning' % url, error_code, 2, c_id, c_status)
             except urllib3.exceptions.ReadTimeoutError as e:
                 c_status = 2
                 error_code = '%s check **failed** - %s \n\n`%s %s Read Timeout: %s`' % (
                     url, localtime, request_method, url, e)
                 incident_id = self.checkForIncident(c_id)
                 if not incident_id:
-                    self.__reportIncident('%s: Read Timeout' % url, error_code, 3, c_id, c_status)
+                    self.__reportIncident('%s: Read Timeout' % url, error_code, 2, c_id, c_status)
             else:
                 if r.status not in status_codes and r.status not in cfErrors:
                     error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error %s: %s`' % (url, localtime, request_method, url, r.status, httplib.responses[r.status])
