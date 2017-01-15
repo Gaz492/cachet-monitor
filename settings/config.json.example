@@ -3,8 +3,10 @@
   "api_token": "5hXeKaLDJVLVE7NziKmb",
   "use_schedule": false,
   "interval": 120,
+  "retries": 3,
   "monitoring": [
     {
+      "enabled": true,
       "name": "Homepage",
       "url": "https://feed-the-beast.com",
       "method": "GET",
