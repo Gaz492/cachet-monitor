@@ -57,16 +57,23 @@ class Cachet(object):
 
         # Loop through sites to monitor
         while x < monitor_count:
+
             isEnabled = self.config['monitoring'][x]['enabled']
             status_codes = self.config['monitoring'][x]['expected_status_code']
             url = self.config['monitoring'][x]['url']
             request_method = self.config['monitoring'][x]['method']
             c_id = self.config['monitoring'][x]['component_id']
             localtime = time.asctime(time.localtime(time.time()))
+
             try:
                 if isEnabled:
                     if request_method.lower() == "get":
-                        requests.get(url, verify=True)
+                        r = requests.get(url, verify=True)
+                        if r.status_code not in status_codes and r.status_code not in cfErrors:
+                            self.logs.debug(httplib.responses[r.status_code])
+                        elif r.status_code not in status_codes and r.status_code in cfErrors:
+                            self.logs.debug(cfErrors[r.status_code])
+                        self.logs.debug(url + " " + str(r.status_code))
                     elif request_method.lower() == "post":
                         requests.get(url, verify=True)
             except requests.exceptions.HTTPError as e:
