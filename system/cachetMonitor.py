@@ -36,7 +36,7 @@ class Cachet(object):
         self.api_token = self.config['api_token']
         self.maxRetries = self.config['retries']
 
-        self.logs = Logger
+        self.logs = Logger()
 
         self.checkSites()
 
@@ -65,12 +65,24 @@ class Cachet(object):
             localtime = time.asctime(time.localtime(time.time()))
             try:
                 if isEnabled:
-                    if request_method.lower == "get":
-                        r = requests.get('https://jira.wolf.ski')
-                    elif request_method.lower == "post":
-                        None
-            except:
-                None
+                    if request_method.lower() == "get":
+                        requests.get(url, verify=True)
+                    elif request_method.lower() == "post":
+                        requests.get(url, verify=True)
+            except requests.exceptions.HTTPError as e:
+                self.logs.info("HTTP Error: " + str(e))
+            except requests.exceptions.SSLError as e:
+                self.logs.info("SSL Error: " + str(e))
+            except requests.exceptions.ConnectionError as e:
+                self.logs.info("Connection Error: " + str(e))
+            except requests.exceptions.Timeout as e:
+                self.logs.info("Request Timeout: " + str(e))
+            except requests.exceptions.TooManyRedirects as e:
+                self.logs.info("Too many redirects: " + str(e))
+            except requests.exceptions.RetryError as e:
+                self.logs.info("Retry Error: " + str(e))
+            except Exception as e:
+                self.logs.info("Unexpected Error: " + str(e))
 
             x += 1
 
