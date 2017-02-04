@@ -71,48 +71,62 @@ class Cachet(object):
                     error_code = '%s check **failed** - %s \n\n`%s %s SSL Error: %s`' % (url, localtime, request_method, url, e)
                     incident_id = self.checkForIncident(c_id)
                     if not incident_id:
-                        self.__reportIncident('%s: SSL Error' % url, error_code, 1, c_id, c_status)
+                        # self.__reportIncident('%s: SSL Error' % url, error_code, 1, c_id, c_status)
+                        self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id,
+                                                 component_status=c_status)
             except urllib3.exceptions.MaxRetryError as e:
                 c_status = 4
                 error_code = '%s check **failed** - %s \n\n`%s %s Max Retry Error: %s`' % (url, localtime, request_method, url, e)
                 incident_id = self.checkForIncident(c_id)
                 if not incident_id:
-                    self.__reportIncident('%s: Max Retry Error' % url, error_code, 1, c_id, c_status)
+                    # self.__reportIncident('%s: Max Retry Error' % url, error_code, 1, c_id, c_status)
+                    self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id,
+                                             component_status=c_status)
             except urllib3.exceptions.NewConnectionError as e:
                 c_status = 4
                 error_code = '%s check **failed** - %s \n\n`%s %s New Connection Error: %s`' % (
                 url, localtime, request_method, url, e)
                 incident_id = self.checkForIncident(c_id)
                 if not incident_id:
-                    self.__reportIncident('%s: New Connection Error' % url, error_code, 1, c_id, c_status)
+                    # self.__reportIncident('%s: New Connection Error' % url, error_code, 1, c_id, c_status)
+                    self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id,
+                                             component_status=c_status)
             except urllib3.exceptions.HTTPError as e:
                 c_status = 4
                 error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error: %s`' % (
                     url, localtime, request_method, url, e)
                 incident_id = self.checkForIncident(c_id)
                 if not incident_id:
-                    self.__reportIncident('%s: HTTP Error' % url, error_code, 1, c_id, c_status)
+                    # self.__reportIncident('%s: HTTP Error' % url, error_code, 1, c_id, c_status)
+                    self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id,
+                                             component_status=c_status)
             except urllib3.exceptions.HTTPWarning as e:
                 c_status = 2
                 error_code = '%s check **failed** - %s \n\n`%s %s HTTP Warning: %s`' % (
                     url, localtime, request_method, url, e)
                 incident_id = self.checkForIncident(c_id)
                 if not incident_id:
-                    self.__reportIncident('%s: HTTP Warning' % url, error_code, 2, c_id, c_status)
+                    # self.__reportIncident('%s: HTTP Warning' % url, error_code, 2, c_id, c_status)
+                    self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id,
+                                             component_status=c_status)
             except urllib3.exceptions.ReadTimeoutError as e:
                 c_status = 2
                 error_code = '%s check **failed** - %s \n\n`%s %s Read Timeout: %s`' % (
                     url, localtime, request_method, url, e)
                 incident_id = self.checkForIncident(c_id)
                 if not incident_id:
-                    self.__reportIncident('%s: Read Timeout' % url, error_code, 2, c_id, c_status)
+                    # self.__reportIncident('%s: Read Timeout' % url, error_code, 2, c_id, c_status)
+                    self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id,
+                                             component_status=c_status)
             else:
                 if r.status not in status_codes and r.status not in cfErrors:
                     error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error %s: %s`' % (url, localtime, request_method, url, r.status, httplib.responses[r.status])
                     c_status = 4
                     incident_id = self.checkForIncident(c_id)
                     if not incident_id:
-                        self.__reportIncident('%s: HTTP Error' % url, error_code, 1, c_id, c_status)
+                        # self.__reportIncident('%s: HTTP Error' % url, error_code, 1, c_id, c_status)
+                        self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id,
+                                                 component_status=c_status)
                     current_status = self.getCurrentStatus(c_id)
                     if current_status is not c_status:
                         self.utils.putComponentsByID(c_id, status=c_status)
@@ -121,7 +135,9 @@ class Cachet(object):
                     c_status = 4
                     incident_id = self.checkForIncident(c_id)
                     if not incident_id:
-                        self.__reportIncident('%s: HTTP Error' % url, error_code, 1, c_id, c_status)
+                        # self.__reportIncident('%s: HTTP Error' % url, error_code, 1, c_id, c_status)
+                        self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id,
+                                                 component_status=c_status)
                     current_status = self.getCurrentStatus(c_id)
                     if current_status is not c_status:
                         self.utils.putComponentsByID(c_id, status=c_status)
@@ -132,7 +148,9 @@ class Cachet(object):
                         incident_id = self.checkForIncident(c_id)
                         if incident_id:
                             incident_description = "Resolved at %s\n\n***\n\n%s" % (localtime, self.getIncidentInfo(incident_id))
-                            self.__updateIncident(incident_id, incident_description, 4, c_id, 1)
+                            # self.__updateIncident(incident_id, incident_description, 4, c_id, 1)
+                            self.utils.putIncidentsByID(incident_id, message=incident_description, status=4, component_id=c_id,
+                                                        component_status=1)
             x += 1
 
     def checkForIncident(self, component_id):
@@ -149,12 +167,12 @@ class Cachet(object):
                 return incident_id
             x += 1
 
-    def __reportIncident(self, title, description, status, c_id, c_status):
-        self.utils.postIncidents(title, description, status, 1, component_id=c_id, component_status=c_status)
-
-    def __updateIncident(self, i_id, description, status, c_id, c_status):
-        self.utils.putIncidentsByID(i_id, message=description, status=status, component_id=c_id,
-                                    component_status=c_status)
+    # def __reportIncident(self, title, description, status, c_id, c_status):
+    #     self.utils.postIncidents(title, description, status, 1, component_id=c_id, component_status=c_status)
+    #
+    # def __updateIncident(self, i_id, description, status, c_id, c_status):
+    #     self.utils.putIncidentsByID(i_id, message=description, status=status, component_id=c_id,
+    #                                 component_status=c_status)
 
     def getIncidentInfo(self, i_id):
         incident = self.utils.getIncidentsByID(i_id).json()
