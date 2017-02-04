@@ -66,7 +66,7 @@ class Cachet(object):
             try:
                 if isEnabled:
                     if request_method.lower == "get":
-                        None
+                        r = requests.get('https://jira.wolf.ski')
                     elif request_method.lower == "post":
                         None
             except:
