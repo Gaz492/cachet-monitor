@@ -60,3 +60,4 @@ target/
 # Pycharm/Custom
 .idea/
 *.json
+.DS_Store
