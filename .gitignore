@@ -61,5 +61,5 @@ target/
 .idea/
 *.json
 .DS_Store
-*.png
+*.svg
 *.pstats
