@@ -26,6 +26,25 @@ from utils import Utils
    limitations under the License.
 '''
 
+'''
+
+   Incident Statuses
+
+   0 = Scheduled
+   1 = Investigating
+   2 = Identified
+   3 = Watching
+   4 = Fixed
+
+   Component Statuses
+
+   1 = Operational
+   2 = Performance Issues
+   3 = Partial Outage
+   4 = Major Outage
+
+'''
+
 
 class Cachet(object):
 
@@ -89,7 +108,14 @@ class Cachet(object):
         self.api_token = self.config['api_token']
         self.maxRetries = self.config['retries']
 
-        self.checkSites()
+        try:
+            if self.utils.ping().status_code == 200 and self.utils.ping().json()['data'] == "Pong!":
+                self.checkSites()
+            else:
+                exit(1)
+        except Exception as e:
+            self.logs.error(e)
+            exit(1)
 
     def checkSites(self):
         # Count how many sites to monitor
@@ -105,33 +131,107 @@ class Cachet(object):
             request_method = self.config['monitoring'][x]['method']
             c_id = self.config['monitoring'][x]['component_id']
             localtime = time.asctime(time.localtime(time.time()))
-            # current_status = self.getCurrentStatus(c_id)
+            current_status = self.utils.getComponentsByID(c_id).json()['data']['status']
+            load_time = 0
+            incident_id = self.checkForIncident(c_id)
 
             try:
                 if isEnabled:
                     if request_method.lower() == "get":
                         r = requests.get(url, verify=True)
                         if r.status_code not in status_codes and r.status_code not in self.httpErrors:
-                            self.logs.debug(httplib.responses[r.status_code])
+                            error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error: %s`' % (url, localtime, request_method, url, httplib.responses[r.status_code])
+                            if not incident_id:
+                                self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id,
+                                                         component_status=4)
+                            if current_status is not 4:
+                                self.utils.putComponentsByID(c_id, status=4)
+                            self.logs.warn("%s" % error_code.strip('\n').strip('`'))
                         elif r.status_code not in status_codes and r.status_code in self.httpErrors:
-                            self.logs.debug(self.httpErrors[r.status_code])
-                        self.logs.debug(url + " " + str(r.status_code))
+                            error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error: %s`' % (url, localtime, request_method, url, self.httpErrors[r.status_code])
+                            if not incident_id:
+                                self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id,
+                                                         component_status=4)
+                            if current_status is not 4:
+                                self.utils.putComponentsByID(c_id, status=4)
+                            self.logs.warn("%s" % error_code.replace('\n', '').replace('`', ''))
                     elif request_method.lower() == "post":
-                        requests.get(url, verify=True)
+                        r = requests.get(url, verify=True)
+                        if r.status_code not in status_codes and r.status_code not in self.httpErrors:
+                            error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error: %s`' % (url, localtime, request_method, url, httplib.responses[r.status_code])
+                            if not incident_id:
+                                self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id,
+                                                         component_status=4)
+                            if current_status is not 4:
+                                self.utils.putComponentsByID(c_id, status=4)
+                            self.logs.warn("%s" % error_code.strip('\n').strip('`'))
+                        elif r.status_code not in status_codes and r.status_code in self.httpErrors:
+                            error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error: %s`' % (url, localtime, request_method, url, self.httpErrors[r.status_code])
+                            if not incident_id:
+                                self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id,
+                                                         component_status=4)
+                            if current_status is not 4:
+                                self.utils.putComponentsByID(c_id, status=4)
+                            self.logs.warn("%s" % error_code.replace('\n', '').replace('`', ''))
             except requests.exceptions.HTTPError as e:
-                self.logs.info("HTTP Error: " + str(e))
+                error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error: %s`' % (url, localtime, request_method, url, e)
+                if not incident_id:
+                    self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id, component_status=4)
+                if current_status is not 4:
+                    self.utils.putComponentsByID(c_id, status=4)
+                self.logs.warn(error_code.replace('\n', '').replace('`', ''))
             except requests.exceptions.SSLError as e:
-                self.logs.info("SSL Error: " + str(e))
+                error_code = '%s check **failed** - %s \n\n`%s %s SSL Error: %s`' % (url, localtime, request_method, url, e)
+                if not incident_id:
+                    self.utils.postIncidents('%s: SSL Error' % url, error_code, 1, 1, component_id=c_id, component_status=4)
+                if current_status is not 4:
+                    self.utils.putComponentsByID(c_id, status=4)
+                self.logs.warn(error_code.replace('\n', '').replace('`', ''))
             except requests.exceptions.ConnectionError as e:
-                self.logs.info("Connection Error: " + str(e))
+                error_code = '%s check **failed** - %s \n\n`%s %s Connection Error: %s`' % (url, localtime, request_method, url, e)
+                if not incident_id:
+                    self.utils.postIncidents('%s: Connection Error' % url, error_code, 1, 1, component_id=c_id, component_status=4)
+                if current_status is not 4:
+                    self.utils.putComponentsByID(c_id, status=4)
+                self.logs.warn(error_code.replace('\n', '').replace('`', ''))
             except requests.exceptions.Timeout as e:
-                self.logs.info("Request Timeout: " + str(e))
+                error_code = '%s check **failed** - %s \n\n`%s %s Request Timeout: %s`' % (url, localtime, request_method, url, e)
+                if not incident_id:
+                    self.utils.postIncidents('%s: Request Timeout' % url, error_code, 1, 1, component_id=c_id, component_status=2)
+                if current_status is not 4:
+                    self.utils.putComponentsByID(c_id, status=4)
+                self.logs.warn(error_code.replace('\n', '').replace('`', ''))
             except requests.exceptions.TooManyRedirects as e:
-                self.logs.info("Too many redirects: " + str(e))
+                error_code = '%s check **failed** - %s \n\n`%s %s Too Many Redirects: %s`' % (url, localtime, request_method, url, e)
+                if not incident_id:
+                    self.utils.postIncidents('%s: Too Many Redirects' % url, error_code, 1, 1, component_id=c_id, component_status=4)
+                if current_status is not 4:
+                    self.utils.putComponentsByID(c_id, status=4)
+                self.logs.warn(error_code.replace('\n', '').replace('`', ''))
             except requests.exceptions.RetryError as e:
-                self.logs.info("Retry Error: " + str(e))
+                error_code = '%s check **failed** - %s \n\n`%s %s Retry Error: %s`' % (url, localtime, request_method, url, e)
+                if not incident_id:
+                    self.utils.postIncidents('%s: Retry Error' % url, error_code, 1, 1, component_id=c_id, component_status=4)
+                if current_status is not 4:
+                    self.utils.putComponentsByID(c_id, status=4)
+                self.logs.warn(error_code.replace('\n', '').replace('`', ''))
             except Exception as e:
-                self.logs.info("Unexpected Error: " + str(e))
+                error_code = '%s check **failed** - %s \n\n`%s %s Unexpected Error: %s`' % (url, localtime, request_method, url, e)
+                if not incident_id:
+                    self.utils.postIncidents('%s: Unexpected Error' % url, error_code, 1, 1, component_id=c_id, component_status=4)
+                if current_status is not 4:
+                    self.utils.putComponentsByID(c_id, status=4)
+                self.logs.error(error_code.replace('\n', '').replace('`', ''))
+            else:
+                if r.status_code in status_codes:
+                    if current_status is not 1 and not incident_id:
+                        self.utils.putComponentsByID(c_id, status=1)
+                        self.logs.info("Issue with %s has been resolved" % url)
+                    elif current_status is not 1 and incident_id:
+                        incident_description = "Resolved at %s\n\n***\n\n%s" % (localtime, self.getIncidentInfo(incident_id))
+                        self.utils.putIncidentsByID(incident_id, message=incident_description, status=4, component_id=c_id, component_status=1)
+                    else:
+                        self.logs.info("%s no issues found" % url)
 
             x += 1
 
@@ -146,6 +246,7 @@ class Cachet(object):
             incident_status = current_incidents['data'][x]['status']
 
             if component_id == incident_component_id and incident_status is not 4:
+                # self.logs.debug("c_id: %s i_id: %s" % (component_id, incident_id))
                 return incident_id
             x += 1
 
@@ -154,7 +255,4 @@ class Cachet(object):
         i_description = incident['data']['message']
         return i_description
 
-    def getCurrentStatus(self, c_id):
-        current_status = self.utils.getComponentsByID(c_id).json()['data']['status']
-        return current_status
 
