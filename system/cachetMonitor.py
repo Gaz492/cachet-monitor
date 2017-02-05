@@ -234,7 +234,7 @@ class Cachet(object):
                         self.logs.info("%s no issues found" % url)
 
             x += 1
-            self.logs.info("############################")
+        self.logs.info("############################")
 
     def checkForIncident(self, component_id):
         current_incidents = self.utils.getIncidents().json()
