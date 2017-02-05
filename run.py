@@ -1,5 +1,4 @@
 import os
-import logging
 import datetime
 
 from apscheduler.schedulers.blocking import BlockingScheduler
@@ -32,8 +31,6 @@ if not os.path.exists("settings/config.json"):
 utils = Utils()
 schedule_interval = utils.readConfig()['interval']
 use_schedule = utils.readConfig()['use_schedule']
-
-logging.basicConfig()
 
 scheduler = BlockingScheduler()
 scheduler.add_job(Cachet, trigger=DateTrigger(run_date=datetime.datetime.now()), id='initial')
