@@ -12,12 +12,6 @@ class Utils(object):
         with open('settings/config.json', 'r') as json_data:
             return json.load(json_data)
 
-    '''
-    TODO
-
-    Rewrite all below
-    '''
-
     def __getRequest(self, path):
         return requests.get(self.base_url + path)
 
