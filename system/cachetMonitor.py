@@ -2,7 +2,6 @@
 # coding=utf-8
 
 import requests
-import certifi
 import httplib
 import time
 from system.logging import Logger
@@ -24,9 +23,7 @@ from utils import Utils
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-'''
 
-'''
 
    Incident Statuses
 

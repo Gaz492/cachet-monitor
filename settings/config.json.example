@@ -8,9 +8,27 @@
     {
       "enabled": true,
       "name": "Homepage",
-      "url": "https://feed-the-beast.com",
+      "url": "https://httpbin.org/status/504",
       "method": "GET",
-      "component_id": 1,
+      "component_id": 9,
+      "timeout": 5,
+      "expected_status_code": [200]
+    },
+    {
+      "enabled": true,
+      "name": "Homepage",
+      "url": "https://httpbin.org/status/200",
+      "method": "GET",
+      "component_id": 10,
+      "timeout": 5,
+      "expected_status_code": [200]
+    },
+    {
+      "enabled": true,
+      "name": "Homepage",
+      "url": "https://httpbin.org/delay/10",
+      "method": "GET",
+      "component_id": 11,
       "timeout": 5,
       "expected_status_code": [200]
     }
