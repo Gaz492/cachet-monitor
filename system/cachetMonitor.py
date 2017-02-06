@@ -8,7 +8,7 @@ from system.logging import Logger
 
 from utils import Utils
 
-'''
+"""
    Copyright 2017 Gareth Williams
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,7 +37,8 @@ from utils import Utils
    1 = Operational
    2 = Performance Issues
    3 = Partial Outage
-   4 = Major Outage'''
+   4 = Major Outage
+"""
 
 
 class Cachet(object):
