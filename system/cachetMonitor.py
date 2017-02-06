@@ -138,17 +138,17 @@ class Cachet(object):
                         r = requests.get(url, verify=True)
                         # self.utils.postMetricsPointsByID(1, r.elapsed.total_seconds() * 1000)
                         if r.status_code not in status_codes and r.status_code not in self.httpErrors:
-                            error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error: %s`' % (url, localtime, request_method, url, httplib.responses[r.status_code])
+                            error_code = '%s check **failed** - %s \n\n`%s %s HTTP StatusError: %s`' % (url, localtime, request_method, url, httplib.responses[r.status_code])
                             if not incident_id:
-                                self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id,
+                                self.utils.postIncidents('%s: HTTP Status Error' % url, error_code, 1, 1, component_id=c_id,
                                                          component_status=4)
                             if current_status is not 4:
                                 self.utils.putComponentsByID(c_id, status=4)
                             self.logs.warn("%s" % error_code.strip('\n').strip('`'))
                         elif r.status_code not in status_codes and r.status_code in self.httpErrors:
-                            error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error: %s`' % (url, localtime, request_method, url, self.httpErrors[r.status_code])
+                            error_code = '%s check **failed** - %s \n\n`%s %s HTTP Status Error: %s`' % (url, localtime, request_method, url, self.httpErrors[r.status_code])
                             if not incident_id:
-                                self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id,
+                                self.utils.postIncidents('%s: HTTP StatusError' % url, error_code, 1, 1, component_id=c_id,
                                                          component_status=4)
                             if current_status is not 4:
                                 self.utils.putComponentsByID(c_id, status=4)
@@ -156,17 +156,17 @@ class Cachet(object):
                     elif request_method.lower() == "post":
                         r = requests.get(url, verify=True)
                         if r.status_code not in status_codes and r.status_code not in self.httpErrors:
-                            error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error: %s`' % (url, localtime, request_method, url, httplib.responses[r.status_code])
+                            error_code = '%s check **failed** - %s \n\n`%s %s HTTP Status Error: %s`' % (url, localtime, request_method, url, httplib.responses[r.status_code])
                             if not incident_id:
-                                self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id,
+                                self.utils.postIncidents('%s: HTTP Status Error' % url, error_code, 1, 1, component_id=c_id,
                                                          component_status=4)
                             if current_status is not 4:
                                 self.utils.putComponentsByID(c_id, status=4)
                             self.logs.warn("%s" % error_code.strip('\n').strip('`'))
                         elif r.status_code not in status_codes and r.status_code in self.httpErrors:
-                            error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error: %s`' % (url, localtime, request_method, url, self.httpErrors[r.status_code])
+                            error_code = '%s check **failed** - %s \n\n`%s %s HTTP Status Error: %s`' % (url, localtime, request_method, url, self.httpErrors[r.status_code])
                             if not incident_id:
-                                self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id,
+                                self.utils.postIncidents('%s: HTTP Status Error' % url, error_code, 1, 1, component_id=c_id,
                                                          component_status=4)
                             if current_status is not 4:
                                 self.utils.putComponentsByID(c_id, status=4)
