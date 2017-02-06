@@ -139,7 +139,7 @@ class Cachet(object):
                 if isEnabled:
                     if request_method.lower() == "get":
                         r = requests.get(url, verify=True)
-                        self.utils.postMetricsPointsByID(1, r.elapsed.total_seconds() * 1000)
+                        # self.utils.postMetricsPointsByID(1, r.elapsed.total_seconds() * 1000)
                         if r.status_code not in status_codes and r.status_code not in self.httpErrors:
                             error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error: %s`' % (url, localtime, request_method, url, httplib.responses[r.status_code])
                             if not incident_id:
