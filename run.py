@@ -1,5 +1,6 @@
 import os
 import datetime
+import logging
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.date import DateTrigger
@@ -21,6 +22,7 @@ from system.utils import Utils
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+logging.basicConfig()
 
 if not os.path.exists("settings/config.json"):
     print("|! Couldn't find config.json!")
