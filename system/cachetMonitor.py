@@ -126,7 +126,6 @@ class Cachet(object):
             c_id = self.config['monitoring'][x]['component_id']
             localtime = time.asctime(time.localtime(time.time()))
             current_status = self.utils.getComponentsByID(c_id).json()['data']['status']
-            load_time = 0
             incident_id = self.checkForIncident(c_id)
             check_timeout = self.config['monitoring'][x]['timeout']
 
@@ -264,7 +263,6 @@ class Cachet(object):
             incident_status = current_incidents['data'][x]['status']
 
             if component_id == incident_component_id and incident_status is not 4:
-                # self.logs.debug("c_id: %s i_id: %s" % (component_id, incident_id))
                 return incident_id
             x += 1
 
