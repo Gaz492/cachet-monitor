@@ -147,6 +147,7 @@ class Cachet(object):
                         elif r.status_code not in status_codes and r.status_code in self.httpErrors:
                             error_code = '%s check **failed** - %s \n\n`%s %s HTTP Status Error: %s`' % (
                             url, localtime, request_method, url, self.httpErrors[r.status_code])
+                            c_status = 4
                             if not incident_id:
                                 self.utils.postIncidents('%s: HTTP Status Error' % url, error_code, 1, 1,
                                                          component_id=c_id, component_status=c_status)
@@ -158,6 +159,7 @@ class Cachet(object):
                         if r.status_code not in status_codes and r.status_code not in self.httpErrors:
                             error_code = '%s check **failed** - %s \n\n`%s %s HTTP Status Error: %s`' % (
                             url, localtime, request_method, url, httplib.responses[r.status_code])
+                            c_status = 4
                             if not incident_id:
                                 self.utils.postIncidents('%s: HTTP Status Error' % url, error_code, 1, 1,
                                                          component_id=c_id, component_status=c_status)
@@ -167,6 +169,7 @@ class Cachet(object):
                         elif r.status_code not in status_codes and r.status_code in self.httpErrors:
                             error_code = '%s check **failed** - %s \n\n`%s %s HTTP Status Error: %s`' % (
                             url, localtime, request_method, url, self.httpErrors[r.status_code])
+                            c_status = 4
                             if not incident_id:
                                 self.utils.postIncidents('%s: HTTP Status Error' % url, error_code, 1, 1,
                                                          component_id=c_id, component_status=c_status)
@@ -176,6 +179,7 @@ class Cachet(object):
             except requests.exceptions.HTTPError as e:
                 error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error: %s`' % (
                 url, localtime, request_method, url, e)
+                c_status = 4
                 if not incident_id:
                     self.utils.postIncidents('%s: HTTP Error' % url, error_code, 1, 1, component_id=c_id,
                                              component_status=c_status)
@@ -185,6 +189,7 @@ class Cachet(object):
             except requests.exceptions.SSLError as e:
                 error_code = '%s check **failed** - %s \n\n`%s %s SSL Error: %s`' % (
                 url, localtime, request_method, url, e)
+                c_status = 4
                 if not incident_id:
                     self.utils.postIncidents('%s: SSL Error' % url, error_code, 1, 1, component_id=c_id,
                                              component_status=c_status)
@@ -194,6 +199,7 @@ class Cachet(object):
             except requests.exceptions.ConnectionError as e:
                 error_code = '%s check **failed** - %s \n\n`%s %s Connection Error: %s`' % (
                 url, localtime, request_method, url, e)
+                c_status = 4
                 if not incident_id:
                     self.utils.postIncidents('%s: Connection Error' % url, error_code, 1, 1, component_id=c_id,
                                              component_status=c_status)
@@ -203,15 +209,17 @@ class Cachet(object):
             except requests.exceptions.Timeout as e:
                 error_code = '%s check **failed** - %s \n\n`%s %s Request Timeout: %s`' % (
                 url, localtime, request_method, url, e)
+                c_status = 2
                 if not incident_id:
                     self.utils.postIncidents('%s: Request Timeout' % url, error_code, 1, 1, component_id=c_id,
-                                             component_status=2)
+                                             component_status=c_status)
                 if current_status is not 4:
                     self.utils.putComponentsByID(c_id, status=c_status)
                 self.logs.warn(error_code.replace('\n', '').replace('`', ''))
             except requests.exceptions.TooManyRedirects as e:
                 error_code = '%s check **failed** - %s \n\n`%s %s Too Many Redirects: %s`' % (
                 url, localtime, request_method, url, e)
+                c_status = 4
                 if not incident_id:
                     self.utils.postIncidents('%s: Too Many Redirects' % url, error_code, 1, 1, component_id=c_id,
                                              component_status=c_status)
@@ -221,6 +229,7 @@ class Cachet(object):
             except requests.exceptions.RetryError as e:
                 error_code = '%s check **failed** - %s \n\n`%s %s Retry Error: %s`' % (
                 url, localtime, request_method, url, e)
+                c_status = 4
                 if not incident_id:
                     self.utils.postIncidents('%s: Retry Error' % url, error_code, 1, 1, component_id=c_id,
                                              component_status=c_status)
@@ -230,6 +239,7 @@ class Cachet(object):
             except Exception as e:
                 error_code = '%s check **failed** - %s \n\n`%s %s Unexpected Error: %s`' % (
                 url, localtime, request_method, url, e)
+                c_status = 4
                 if not incident_id:
                     self.utils.postIncidents('%s: Unexpected Error' % url, error_code, 1, 1, component_id=c_id,
                                              component_status=c_status)
