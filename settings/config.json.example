@@ -8,27 +8,18 @@
     {
       "enabled": true,
       "name": "Homepage",
-      "url": "https://httpbin.org/status/504",
+      "url": "http://feed-the-beast.com/",
       "method": "GET",
-      "component_id": 9,
+      "component_id": 1,
       "timeout": 5,
       "expected_status_code": [200]
     },
     {
       "enabled": true,
       "name": "Homepage",
-      "url": "https://httpbin.org/status/200",
+      "url": "https://forum.feed-the-beast.com/",
       "method": "GET",
-      "component_id": 10,
-      "timeout": 5,
-      "expected_status_code": [200]
-    },
-    {
-      "enabled": true,
-      "name": "Homepage",
-      "url": "https://httpbin.org/delay/10",
-      "method": "GET",
-      "component_id": 11,
+      "component_id": 2,
       "timeout": 5,
       "expected_status_code": [200]
     }
