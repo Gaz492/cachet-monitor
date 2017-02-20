@@ -236,6 +236,8 @@ class Cachet(object):
                 if current_status is not 4:
                     self.utils.putComponentsByID(c_id, status=c_status)
                 self.logs.warn(error_code.replace('\n', '').replace('`', ''))
+            except httplib.BadStatusLine as e:
+                self.logs.error("%s \nCould not fetch %s" % (e, url))
             except Exception as e:
                 error_code = '%s check **failed** - %s \n\n`%s %s Unexpected Error: %s`' % (
                 url, localtime, request_method, url, e)
