@@ -130,52 +130,55 @@ class Cachet(object):
             check_timeout = self.config['monitoring'][x]['timeout']
 
             try:
-                if isEnabled:
-                    if request_method.lower() == "get":
-                        r = requests.get(url, verify=True, timeout=check_timeout)
-                        # self.utils.postMetricsPointsByID(1, r.elapsed.total_seconds() * 1000)
-                        if r.status_code not in status_codes and r.status_code not in self.httpErrors:
-                            error_code = '%s check **failed** - %s \n\n`%s %s HTTP StatusError: %s`' % (
-                            url, localtime, request_method, url, httplib.responses[r.status_code])
-                            c_status = 4
-                            if not incident_id:
-                                self.utils.postIncidents('%s: HTTP Status Error' % url, error_code, 1, 1,
-                                                         component_id=c_id, component_status=c_status)
-                            if current_status is not 4:
-                                self.utils.putComponentsByID(c_id, status=c_status)
-                            self.logs.warn("%s" % error_code.replace('\n', '').replace('`', ''))
-                        elif r.status_code not in status_codes and r.status_code in self.httpErrors:
-                            error_code = '%s check **failed** - %s \n\n`%s %s HTTP Status Error: %s`' % (
-                            url, localtime, request_method, url, self.httpErrors[r.status_code])
-                            c_status = 4
-                            if not incident_id:
-                                self.utils.postIncidents('%s: HTTP Status Error' % url, error_code, 1, 1,
-                                                         component_id=c_id, component_status=c_status)
-                            if current_status is not 4:
-                                self.utils.putComponentsByID(c_id, status=c_status)
-                            self.logs.warn("%s" % error_code.replace('\n', '').replace('`', ''))
-                    elif request_method.lower() == "post":
-                        r = requests.get(url, verify=True, timeout=check_timeout)
-                        if r.status_code not in status_codes and r.status_code not in self.httpErrors:
-                            error_code = '%s check **failed** - %s \n\n`%s %s HTTP Status Error: %s`' % (
-                            url, localtime, request_method, url, httplib.responses[r.status_code])
-                            c_status = 4
-                            if not incident_id:
-                                self.utils.postIncidents('%s: HTTP Status Error' % url, error_code, 1, 1,
-                                                         component_id=c_id, component_status=c_status)
-                            if current_status is not 4:
-                                self.utils.putComponentsByID(c_id, status=c_status)
-                            self.logs.warn("%s" % error_code.replace('\n', '').replace('`', ''))
-                        elif r.status_code not in status_codes and r.status_code in self.httpErrors:
-                            error_code = '%s check **failed** - %s \n\n`%s %s HTTP Status Error: %s`' % (
-                            url, localtime, request_method, url, self.httpErrors[r.status_code])
-                            c_status = 4
-                            if not incident_id:
-                                self.utils.postIncidents('%s: HTTP Status Error' % url, error_code, 1, 1,
-                                                         component_id=c_id, component_status=c_status)
-                            if current_status is not 4:
-                                self.utils.putComponentsByID(c_id, status=c_status)
-                            self.logs.warn("%s" % error_code.replace('\n', '').replace('`', ''))
+                if self.checkInitialPing() == 200:
+                    if isEnabled:
+                        if request_method.lower() == "get":
+                            r = requests.get(url, verify=True, timeout=check_timeout)
+                            # self.utils.postMetricsPointsByID(1, r.elapsed.total_seconds() * 1000)
+                            if r.status_code not in status_codes and r.status_code not in self.httpErrors:
+                                error_code = '%s check **failed** - %s \n\n`%s %s HTTP StatusError: %s`' % (
+                                url, localtime, request_method, url, httplib.responses[r.status_code])
+                                c_status = 4
+                                if not incident_id:
+                                    self.utils.postIncidents('%s: HTTP Status Error' % url, error_code, 1, 1,
+                                                             component_id=c_id, component_status=c_status)
+                                if current_status is not 4:
+                                    self.utils.putComponentsByID(c_id, status=c_status)
+                                self.logs.warn("%s" % error_code.replace('\n', '').replace('`', ''))
+                            elif r.status_code not in status_codes and r.status_code in self.httpErrors:
+                                error_code = '%s check **failed** - %s \n\n`%s %s HTTP Status Error: %s`' % (
+                                url, localtime, request_method, url, self.httpErrors[r.status_code])
+                                c_status = 4
+                                if not incident_id:
+                                    self.utils.postIncidents('%s: HTTP Status Error' % url, error_code, 1, 1,
+                                                             component_id=c_id, component_status=c_status)
+                                if current_status is not 4:
+                                    self.utils.putComponentsByID(c_id, status=c_status)
+                                self.logs.warn("%s" % error_code.replace('\n', '').replace('`', ''))
+                        elif request_method.lower() == "post":
+                            r = requests.get(url, verify=True, timeout=check_timeout)
+                            if r.status_code not in status_codes and r.status_code not in self.httpErrors:
+                                error_code = '%s check **failed** - %s \n\n`%s %s HTTP Status Error: %s`' % (
+                                url, localtime, request_method, url, httplib.responses[r.status_code])
+                                c_status = 4
+                                if not incident_id:
+                                    self.utils.postIncidents('%s: HTTP Status Error' % url, error_code, 1, 1,
+                                                             component_id=c_id, component_status=c_status)
+                                if current_status is not 4:
+                                    self.utils.putComponentsByID(c_id, status=c_status)
+                                self.logs.warn("%s" % error_code.replace('\n', '').replace('`', ''))
+                            elif r.status_code not in status_codes and r.status_code in self.httpErrors:
+                                error_code = '%s check **failed** - %s \n\n`%s %s HTTP Status Error: %s`' % (
+                                url, localtime, request_method, url, self.httpErrors[r.status_code])
+                                c_status = 4
+                                if not incident_id:
+                                    self.utils.postIncidents('%s: HTTP Status Error' % url, error_code, 1, 1,
+                                                             component_id=c_id, component_status=c_status)
+                                if current_status is not 4:
+                                    self.utils.putComponentsByID(c_id, status=c_status)
+                                self.logs.warn("%s" % error_code.replace('\n', '').replace('`', ''))
+                else:
+                    self.logs.error("Unable to connect to %s" % self.base_url)
             except requests.exceptions.HTTPError as e:
                 error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error: %s`' % (
                 url, localtime, request_method, url, e)
@@ -282,3 +285,7 @@ class Cachet(object):
         incident = self.utils.getIncidentsByID(i_id).json()
         i_description = incident['data']['message']
         return i_description
+
+    def checkInitialPing(self):
+        r = requests.get(self.base_url, verify=True, timeout=10)
+        return r.status_code
