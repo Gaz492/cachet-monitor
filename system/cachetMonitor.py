@@ -287,5 +287,5 @@ class Cachet(object):
         return i_description
 
     def checkInitialPing(self):
-        r = requests.get(self.base_url, verify=True, timeout=10)
-        return r.status_code
+        rPing = requests.get(self.base_url, verify=True, timeout=10)
+        return rPing.status_code
