@@ -4,7 +4,7 @@ import json
 
 class Utils(object):
     def __init__(self):
-        self.api_url = '%s/api/v1' % self.config['api_url']
+        self.api_url = '%s/api/v1' % self.readConfig()['api_url']
         self.api_token = self.readConfig()['api_token']
 
     def readConfig(self):
