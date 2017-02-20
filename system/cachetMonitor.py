@@ -110,7 +110,7 @@ class Cachet(object):
             if self.checkInitialPing() == 200:
                 self.checkSites()
             else:
-                break
+                exit()
         except Exception as e:
             self.logs.error(e)
 
