@@ -4,8 +4,9 @@
 import requests
 import httplib
 import time
-from system.logging import Logger
+import sys
 
+from system.logging import Logger
 from utils import Utils
 
 
@@ -102,12 +103,14 @@ class Cachet(object):
         self.api_url = self.config['api_url'] + '/api/v1'
         self.api_token = self.config['api_token']
         self.maxRetries = self.config['retries']
+        print(self.base_url)
+        print(self.api_url)
 
         try:
             if self.checkInitialPing() == 200:
                 self.checkSites()
             else:
-                exit("Unable to connect to %s" % self.base_url)
+                sys.exit("Unable to connect to %s" % self.base_url)
         except Exception as e:
             self.logs.error(e)
             exit(1)
