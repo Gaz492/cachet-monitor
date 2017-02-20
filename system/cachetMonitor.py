@@ -110,10 +110,9 @@ class Cachet(object):
             if self.checkInitialPing() == 200:
                 self.checkSites()
             else:
-                sys.exit("Unable to connect to %s" % self.base_url)
+                break
         except Exception as e:
             self.logs.error(e)
-            exit(1)
 
     def checkSites(self):
         # Count how many sites to monitor
