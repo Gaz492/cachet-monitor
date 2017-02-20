@@ -104,14 +104,14 @@ class Cachet(object):
         self.api_token = self.config['api_token']
         self.maxRetries = self.config['retries']
 
-        # try:
-        #     if self.checkInitialPing() == 200:
-        #         self.checkSites()
-        #     else:
-        #         exit()
-        # except Exception as e:
-        #     self.logs.error(e)
-        self.checkSites()
+        try:
+            if self.checkInitialPing() == 200:
+                self.checkSites()
+            else:
+                exit()
+        except Exception as e:
+            self.logs.error(e)
+            exit()
 
     def checkSites(self):
         # Count how many sites to monitor

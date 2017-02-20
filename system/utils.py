@@ -4,7 +4,7 @@ import json
 
 class Utils(object):
     def __init__(self):
-        self.base_url = self.readConfig()['api_url']
+        self.api_url = '%s/api/v1' % self.config['api_url']
         self.api_token = self.readConfig()['api_token']
 
     def readConfig(self):
@@ -13,16 +13,16 @@ class Utils(object):
             return json.load(json_data)
 
     def __getRequest(self, path):
-        return requests.get(self.base_url + path)
+        return requests.get(self.api_url + path)
 
     def __postRequest(self, path, data):
-        return requests.post(self.base_url + path, data, headers={'X-Cachet-Token': self.api_token})
+        return requests.post(self.api_url + path, data, headers={'X-Cachet-Token': self.api_token})
 
     def __putRequest(self, path, data):
-        return requests.put(self.base_url + path, data, headers={'X-Cachet-Token': self.api_token})
+        return requests.put(self.api_url + path, data, headers={'X-Cachet-Token': self.api_token})
 
     def __delRequest(self, path):
-        return requests.delete(self.base_url + path, headers={'X-Cachet-Token': self.api_token})
+        return requests.delete(self.api_url + path, headers={'X-Cachet-Token': self.api_token})
 
     def ping(self):
         return self.__getRequest('/ping')
