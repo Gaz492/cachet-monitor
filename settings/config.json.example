@@ -1,5 +1,5 @@
 {
-  "api_url": "http://status.wolf.ski/api/v1",
+  "api_url": "http://status.wolf.ski",
   "api_token": "5hXeKaLDJVLVE7NziKmb",
   "use_schedule": false,
   "interval": 120,

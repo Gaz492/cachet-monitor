@@ -99,6 +99,7 @@ class Cachet(object):
         self.utils = Utils()
         self.config = self.utils.readConfig()
         self.base_url = self.config['api_url']
+        self.api_url = self.config['api_url'] + '/api/v1'
         self.api_token = self.config['api_token']
         self.maxRetries = self.config['retries']
 
@@ -178,7 +179,7 @@ class Cachet(object):
                                     self.utils.putComponentsByID(c_id, status=c_status)
                                 self.logs.warn("%s" % error_code.replace('\n', '').replace('`', ''))
                 else:
-                    self.logs.error("Unable to connect to %s" % self.base_url)
+                    self.logs.error("Unable to connect to %s" % self.api_url)
             except requests.exceptions.HTTPError as e:
                 error_code = '%s check **failed** - %s \n\n`%s %s HTTP Error: %s`' % (
                 url, localtime, request_method, url, e)
