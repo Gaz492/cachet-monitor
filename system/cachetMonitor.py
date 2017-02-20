@@ -100,11 +100,9 @@ class Cachet(object):
         self.utils = Utils()
         self.config = self.utils.readConfig()
         self.base_url = self.config['api_url']
-        self.api_url = self.config['api_url'] + '/api/v1'
+        self.api_url = '%s/api/v1' % self.config['api_url']
         self.api_token = self.config['api_token']
         self.maxRetries = self.config['retries']
-        print(self.base_url)
-        print(self.api_url)
 
         try:
             if self.checkInitialPing() == 200:
