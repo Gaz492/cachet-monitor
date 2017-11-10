@@ -1,0 +1,13 @@
+{
+  "name": "cachet-monitor",
+  "version": "1.0.0",
+  "description": "Service monitor for cachet",
+  "main": "app.js",
+  "author": "Gareth Williams",
+  "license": "MIT",
+  "dependencies": {
+    "cachet-api": "^1.0.5",
+    "request": "^2.83.0",
+    "requestretry": "^1.12.2"
+  }
+}
