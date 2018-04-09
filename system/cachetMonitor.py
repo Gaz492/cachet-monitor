@@ -58,7 +58,7 @@ class Cachet(object):
         # 4xx
         418: "I'm a teapot.",
         420: "Method Failure",
-        421: "Enhance Your Calm",
+        421: "Misdirected Request",
         422: "Unprocessable Entity",
         423: "Locked",
         424: "Failed Dependency",
